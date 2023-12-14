@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- link ini digunakan untuk mengambil libary bootstrap dari internet atau dengan cdn -->
+</head>
+<body>
+    <div class="container mt-5">
+        <form action="{{ url_for('chat') }}" method="post">
+            <div class="form-group">
+                <label for="username">Enter your name:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="room">Enter room name:</label>
+                <input type="text" class="form-control" id="room" name="room" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Join Chat</button>
+        </form>
+        <!-- form ini dibuat untuk menampung sekaligus mengirim data ke flask python agar user dapat bergabung dengan room sekaligus
+        mengirim username agar user lain didalam room dapat melihat siapa yang mengririm pesan -->
+    </div>
+</body>
+</html>

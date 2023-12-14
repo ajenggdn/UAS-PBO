@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room }} Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container back mt-5 ">
+        <h2>Welcome, {{ username }}!</h2>
+        <div id="messages" class="mt-3"></div>
+        <form id="messageForm" class="mt-3">
+            <div class="form-group">
+                <label for="message">Type your message :</label>
+                <input type="text" class="form-control" id="message" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+
+        <!-- form digunakan untuk menampung pesan yang akan dikirim user untuk di teruskan ke backend yang sebelumnya sudah dibuat -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { // script ini digunakan agar ketika halaman html dimuat maka javascript akan otomatis berjalan
+            var socket = io.connect('http://' + document.domain + ':' + location.port); 
+            // baris ini membuat koneksi ke server Socket.IO dengan URL yang sesuai dengan protokol, domain, dan port dari halaman HTML 
+    
+            socket.emit('joined', {username: '{{ username }}', room: '{{ room }}'});
+            // Baris kode ini menggunakan metode emit dari objek socket untuk mengirim pesan ke server Socket.IO. 
+            // fungsi menampilkan user yang bergabung ke dalam room obrolon 
+
+    
+            socket.on('status', function(data) {
+                $('#messages').append($('<p>').text(data.msg));
+            });
+
+            // fungsi ini digunakan untuk mengirim status ke backend yang menanakan user sedang di room atau sudah keluar dari room
+
+            socket.on('receive_message', function(data) {
+                var isCurrentUser = data.username === '{{ username }}';
+                var messageContainerClass = isCurrentUser ? 'd-flex justify-content-end' : 'd-flex justify-content-start';
+                var messageContainer = $('<div>').addClass(messageContainerClass);
+                var message = $('<span>').addClass('p-2 rounded text-white').text(data.message);
+                if (!isCurrentUser) {
+                    var senderName = $('<span>').addClass('font-weight-bold pr-2').text(data.username + ': ');
+                    messageContainer.append(senderName);
+                    message.addClass('bg-secondary');
+                } else {
+                    message.addClass('bg-info');
+                }
+                messageContainer.append(message);
+                $('#messages').append(messageContainer);
+            });
+
+            // fungsi ini digunakan untuk menerima pesan yang di kirim oleh user melalui backed, di sini dilakukan pengecekan sebelum ditampilkan apabila username orang yang 
+            // mengakses sistem sama dengan pesan yang ditampilkan maka pesan akan berada di sebelah kanan, dan terjadi sebaliknya
+
+
+            
+            $('#messageForm').submit(function(event) {
+                event.preventDefault();
+                var message = $('#message').val();
+                socket.emit('send_message', {username: '{{ username }}', message: message, room: '{{ room }}'});
+                $('#message').val('');
+                return false;
+            });
+
+            // baris kode ini digunakan untuk mengirim pesan ke backed, data yang dikirm adalah username, room tempat pengirim dan juga pesan apa yang dikirim
+    
+            window.onbeforeunload = function() {
+                socket.emit('left', {username: '{{ username }}', room: '{{ room }}'});
+            };
+
+            // baris kode ini digunakan untuk menampilkan bahwa user meninggalakan room, yaitu dengan cara mendeteksi bahwa user menutup ruangan
+        });
+    </script>
+</body>
+</html>

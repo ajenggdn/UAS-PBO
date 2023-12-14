@@ -1,0 +1,9 @@
+1. download atau clone dari repository d ajeng novianasary
+2. extract file hasil download
+3. buka terminal(cmd, gitbash, powershellm atau termminal lainnya ) didalam folder hasil extract
+4. buat sebuah virtual enviroment untuk memisahkan library python yang tertanam di komputer dan 
+   khusus untuk aplikasi chat sederhana ini dengan cara ketik "python -m venv env" tanpa tanda petik 
+   env adalah nama folder virtual enviroment mu kamu bebabas memberikan nama
+5. lalu aktifkan virtual enviroment tersebut dengan cara ketik "env\Scripts\activate.bat" di terminal sampai nama folder berubah menjadi (env)
+6. install dependensi yang diperlukan dengan cara ketik "pip install -r requirements.txt" tanpa tanda petik
+7. jalankan server dengan cara ketik "python app.py"
